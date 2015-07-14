@@ -1,0 +1,23 @@
+{
+  "name": "jwt-test",
+  "version": "0.0.1",
+  "description": "testing json web token auth",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "jwt"
+  ],
+  "author": "Toyin",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.13.2",
+    "dotenv": "^1.2.0",
+    "express": "^4.13.1",
+    "jsonwebtoken": "^5.0.2",
+    "mongoose": "^4.0.6",
+    "morgan": "^1.6.1"
+  }
+}

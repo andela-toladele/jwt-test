@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-lg-12">
+    <div class="panel panel-primary">
+            <div class="panel-heading">
+                <strong>Add role or permission</strong>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="role" class="col-sm-2 control-label">Role</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="text" placeholder="Enter role..." ng-model="role">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-6">
+                            <button type="submit" class="btn btn-default" ng-click="addRole()">Add role</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="role" class="col-sm-2 control-label">Permission</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="text" placeholder="Enter role..." ng-model="permission">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default" ng-click="addPermission()">Add permission</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
