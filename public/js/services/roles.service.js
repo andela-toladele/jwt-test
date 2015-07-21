@@ -1,45 +1,45 @@
 'use strict';
- 
-angular.module('angularRestfulAuth').factory('RoleServ', function($http){
+
+angular.module('angularRestfulAuth').factory('RoleServ', function($http) {
   var apiFactory = {};
 
-  apiFactory.getUsers = function(){
+  apiFactory.getUsers = function() {
 
     return $http.get("/api/users");
 
   }
 
-  apiFactory.getRoles = function(){
+  apiFactory.getRoles = function() {
 
     return $http.get("/api/roles");
 
   }
 
-  apiFactory.addRole = function(data){
+  apiFactory.addRole = function(data) {
 
     return $http.post("/api/role", data);
 
   }
 
-  apiFactory.setRole = function(data){
+  apiFactory.setRole = function(data) {
 
     return $http.put("/api/set-role", data);
 
   }
 
-  apiFactory.getPermissions = function(){
+  apiFactory.getPermissions = function() {
 
     return $http.get("/api/permissions");
 
   }
 
-  apiFactory.addPermission = function(data){
+  apiFactory.addPermission = function(data) {
 
     return $http.post("/api/permission", data);
 
   }
 
-  apiFactory.editPermissions = function(data){
+  apiFactory.editPermissions = function(data) {
 
     return $http.put("/api/permissions", data);
 

@@ -7,6 +7,12 @@ var AuthMethods = require('./middleware/authmethods');
 // expose the routes to our app with module.exports
 module.exports = function(router) {
 
+  router.route('/')
+
+    .get(function(req, res, next) {
+      return res.send({ success : true, message : 'API where you at!' });   
+  }); 
+  
   router.post('/authenticate', function(req, res) {
     User.findOne({email: req.body.email}, function(err, user) {
       if (err) {
@@ -133,6 +139,11 @@ module.exports = function(router) {
 
 
   router.post('/signup', function(req, res) {
+
+    if(!req.body.email || !req.body.password){
+      return res.send(422,{ type : false, message : 'Incorrect parameters!' });
+    }
+
     User.findOne({email: req.body.email}, function(err, user) {
       if (err) {
         res.json({
@@ -151,7 +162,8 @@ module.exports = function(router) {
           userModel.username = req.body.username;
           userModel.password = userModel.generateHash(req.body.password);
           userModel.save(function(err, user) {
-            user.token = jwt.sign(user, process.env.JWT_SECRET);
+            var secret = process.env.JWT_SECRET || 'wtf';
+            user.token = jwt.sign(user, secret);            
             user.save(function(err, user1) {
               res.json({
                 type: true,
