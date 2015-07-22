@@ -34,7 +34,7 @@ module.exports = function(router) {
 
           AuthMethods.getUserPermissions(user, req, res, null, function(userObj, request, response){
 
-            userObj.token = jwt.sign({email: user.email, username: user.username, password: user.password, date: Date.now()}, process.env.JWT_SECRET);
+            userObj.token = jwt.sign({email: user.email, username: user.username, password: user.password, userType: user.userType, date: Date.now()}, process.env.JWT_SECRET);
             userObj.save(function(err, user1) {
 
               if(err){
