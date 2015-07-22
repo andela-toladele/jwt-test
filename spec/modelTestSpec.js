@@ -1,4 +1,4 @@
-//'use strict';
+'use strict';
 
 var mongoose = require('mongoose');
 var User = require('../app/models/User');
@@ -55,7 +55,6 @@ describe("Model Test", function() {
         user2.email = 'mail@dee';
         user2.password = '****';
         user2.save(function(err, users) {
-          console.log('err', err);
           expect(err).toBeDefined();
           expect(err.code).toBe(11000);
           done();

@@ -28,12 +28,13 @@ module.exports = function(router) {
             res.json({
               type: false,
               data: "Incorrect password"
-            }); 
+            });
+            return;
           }
 
-          AuthMethods.getUserPermissions(user, res, null, function(userObj, response){
+          AuthMethods.getUserPermissions(user, req, res, null, function(userObj, request, response){
 
-            userObj.token = jwt.sign(userObj, process.env.JWT_SECRET);
+            userObj.token = jwt.sign({email: user.email, username: user.username, password: user.password, date: Date.now()}, process.env.JWT_SECRET);
             userObj.save(function(err, user1) {
 
               if(err){
@@ -50,7 +51,7 @@ module.exports = function(router) {
               }
             });              
           });
-          //console.log(user);
+
           // if the password is correct
           
         } else {
@@ -81,7 +82,7 @@ module.exports = function(router) {
 
           user.userType = req.body.userType;
 
-          user.token = jwt.sign(user, process.env.JWT_SECRET);
+          user.token = jwt.sign({email: user.email, username: user.username, password: user.password, date: Date.now()}, process.env.JWT_SECRET);
 
           user.save(function(err, user1) {
 
@@ -117,7 +118,7 @@ module.exports = function(router) {
     });   
   });
 
-  router.get('/me', AuthMethods.ensureAuthorized, function(req, res) {
+  router.get('/me', AuthMethods.validateToken, function(req, res) {
     
     res.json({
       type: true,
@@ -126,7 +127,7 @@ module.exports = function(router) {
         
   });
 
-  router.get('/users', AuthMethods.ensureAuthorized, function(req, res) {
+  router.get('/users', AuthMethods.validateToken, function(req, res) {
     User.find(function(err, users) {
 
         if (err)
@@ -162,8 +163,8 @@ module.exports = function(router) {
           userModel.username = req.body.username;
           userModel.password = userModel.generateHash(req.body.password);
           userModel.save(function(err, user) {
-            var secret = process.env.JWT_SECRET || 'wtf';
-            user.token = jwt.sign(user, secret);            
+            //var secret = process.env.JWT_SECRET || process.env.TEST_SECRET;
+            user.token = jwt.sign({email: user.email, username: user.username, password: user.password, date: Date.now()}, process.env.JWT_SECRET);            
             user.save(function(err, user1) {
               res.json({
                 type: true,
@@ -195,16 +196,7 @@ module.exports = function(router) {
       
       res.json({ message: 'Role created!', data: model});
     });
-  });
-
-  router.get('/roles', AuthMethods.isAdmin, function(req, res) {
-    Role.find(function(err, roles){
-      if (err)
-        return res.send(err);
-
-      res.json(roles);
-    });   
-  });
+  });  
 
   router.post('/permission', AuthMethods.isAdmin, function(req, res) {
     var permission = new Permission();

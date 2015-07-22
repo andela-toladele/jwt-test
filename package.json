@@ -4,7 +4,7 @@
   "description": "testing json web token auth",
   "main": "server.js",
   "scripts": {
-    "test": "./node_modules/.bin/jasmine-node spec"
+    "test": "JWT_SECRET=dsdgsdgsd ./node_modules/.bin/jasmine-node spec"
   },
   "keywords": [
     "jwt"

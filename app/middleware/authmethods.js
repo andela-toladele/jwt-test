@@ -1,12 +1,12 @@
-var User     = require('./../models/User');
-var Permission     = require('./../models/Permission');
+var User = require('./../models/User');
+var Permission = require('./../models/Permission');
 
-var AuthMethods = function(){
+var AuthMethods = function() {
 
   var self = this;
 
-  this.ensureAuthorized = function (req, res, next) {
-    
+  this.validateTokenAndExec = function(req, res, next, callback) {
+
     var bearerToken;
 
     var bearerHeader = req.headers["authorization"];
@@ -14,100 +14,125 @@ var AuthMethods = function(){
     if (typeof bearerHeader !== 'undefined') {
       var bearer = bearerHeader.split(" ");
       bearerToken = bearer[1];
-      
-      User.findOne({token: bearerToken}, function(err, user) {
+
+      User.findOne({
+        token: bearerToken
+      }, function(err, user) {
         if (err) {
-         return res.send(500);
+          return res.send(500);
         } else {
 
-          if(user){
-            //user.permission = self.listUserPermissions(user.role);
-            self.getUserPermissions(user, req, next, function(userObj, request, nextObj){
+          if (user) {
+            self.getUserPermissions(user, req, res, next, callback);         
 
-              request.user = userObj;            
-              nextObj();
-              
-            });
-            
           } else {
-            return res.send(401,{ type : false, message : 'Invalid token!' });
-          }   
+
+            return res.send(401, {
+              type: false,
+              message: 'Invalid token!'
+            });
+          }
         }
-      });      
+      });
     } else {
-      return res.send(401);
+      return res.send(401, {
+        type: false,
+        message: 'No token found!'
+      });
     }
   };
 
-  this.isAdmin = function(req, res, next) {
-    
-    self.ensureAuthorized(req, res, next);
+  this.validateToken = function(req, res, next) {
+    self.validateTokenAndExec(req, res, next);
+  }
 
-    if(req.user){
-      if(req.user.userType ==="admin"){
-        next();
+  this.isAdmin = function(req, res, next) {
+
+    self.validateTokenAndExec(req, res, next, function(userObj, request, response, nextObj) {
+      
+      if (userObj) {
+        if (userObj.userType === "admin") {
+          nextObj();
+        } else {
+          
+          return response.send(403, {
+            type: false,
+            message: 'Restricted to admin!'
+          });
+        }
       }else{
-        return res.send(403, { type : false, message : 'Restricted to admin!' });
+        throw 'Undefined Error';
       }
-    }      
+
+    });
   };
 
-  this.getUserPermissions = function(user, reqOrRes, next, callback) {
+  this.getUserPermissions = function(user, req, res, next, callback) {
     var permissions = [];
 
-    
-    if(user.role){
+
+    if (user.role) {
       var allPermission;
 
-      Permission.find({'roles': user.role},function(err, data){
+      Permission.find({
+        'roles': user.role
+      }, function(err, data) {
         if (err)
           return res.send(err);
         allPermission = data;
-        
 
-        if(allPermission){
+
+        if (allPermission) {
           allPermission.forEach(function(value) {
 
             permissions.push(value.name);
             //console.log(permissions);
-            
+
           });
           user.permission = permissions;
-          callback(user, reqOrRes, next);
-                
+          req.user = user;
+
+          if(callback){
+            callback(user, req, res, next);
+          }else{
+            next();
+          }
+
         }
-      });      
+      });
     }
-    
+
   }
 
-  this.hasPermission = function(permission){
+  this.hasPermission = function(permission) {
 
     var flag;
-    Permission.findOne({name: permission}, function(err, data){
+    Permission.findOne({
+      name: permission
+    }, function(err, data) {
       if (err)
         return res.send(err);
 
-      if(data){
-        if(req.user.userType=="admin"){
+      if (data) {
+        if (req.user.userType == "admin") {
           next();
           return;
         }
 
         data.roles.forEach(function(role) {
 
-          if(req.user.role && role.name == req.user.role){
+          if (req.user.role && role.name == req.user.role) {
             flag = true;
             next();
           }
-          
+
         });
       }
 
-      if(!flag)
-      return res.send(401, 'User is not authorized');
+      if (!flag)
+        return res.send(401, 'User is not authorized');
     });
-    
+
   }
 }
 
