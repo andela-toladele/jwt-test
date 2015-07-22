@@ -23,12 +23,12 @@ describe("Model Test", function() {
 
     beforeEach(function(done) {
 
-      User.remove({}, function(err){
-        if(!err)
+      User.remove({}, function(err) {
+        if (!err)
           console.log("User collection removed");
       });
       done();
-      
+
     });
 
     it('expects new user to be created', function(done) {
@@ -37,7 +37,7 @@ describe("Model Test", function() {
       user.password = '****';
 
       user.save(function() {
-        User.find(function(err, users) {          
+        User.find(function(err, users) {
           expect(err).toBe(null);
           expect(users.length).toBe(1);
           done();
@@ -67,11 +67,9 @@ describe("Model Test", function() {
       user.email = undefined;
       user.password = '****';
 
-      user.save(function() {
-        user.save(function(err, user) {
-          expect(err).toBeDefined();
-          done();
-        });
+      user.save(function(err, user) {
+        expect(err).toBeDefined();
+        done();
       });
     });
   });
@@ -80,13 +78,13 @@ describe("Model Test", function() {
 
     beforeEach(function(done) {
 
-      Role.remove({}, function(err){
-        if(!err)
+      Role.remove({}, function(err) {
+        if (!err)
           console.log("Role collection removed");
       });
-      done();  
+      done();
 
-      
+
     });
 
     it('expects new role to be created', function(done) {
@@ -119,16 +117,14 @@ describe("Model Test", function() {
       });
     });
 
-    it('expects role field to be required', function(done) {
+    it('expects role name field to be required', function(done) {
       role = new Role();
       role.name = undefined;
       role.createdBy = 'me';
 
-      role.save(function() {
-        role.save(function(err, role) {
-          expect(err).toBeDefined();
-          done();
-        });
+      role.save(function(err, role) {
+        expect(err).toBeDefined();
+        done();
       });
     });
   });
@@ -137,13 +133,13 @@ describe("Model Test", function() {
 
     beforeEach(function(done) {
 
-     Permission.remove({}, function(err){
-        if(!err)
+      Permission.remove({}, function(err) {
+        if (!err)
           console.log("Permission collection removed");
       });
       done();
-      
-      
+
+
     });
 
     it('expects new permission to be created', function(done) {
@@ -177,17 +173,15 @@ describe("Model Test", function() {
       });
     });
 
-    it('expects permission field to be required', function(done) {
+    it('expects permission name field to be required', function(done) {
       permission = new Permission();
       permission.name = undefined;
       permission.createdBy = 'me';
 
-      permission.save(function() {
-        permission.save(function(err, permission) {
-          expect(err).toBeDefined();
-          mongoose.disconnect();
-          done();
-        });
+      permission.save(function(err, permission) {
+        expect(err).toBeDefined();
+        mongoose.disconnect();
+        done();
       });
     });
   });
