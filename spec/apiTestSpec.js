@@ -239,7 +239,7 @@ describe("Server Test", function() {
         });
     });
 
-    it('should not allow user signin with right credentials', function(done) {
+    it('should allow user signin with right credentials', function(done) {
 
       request(app)
         .post('/signup')
